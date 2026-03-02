@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Design Strategy Archive | 128 Books</title>
+
+    <style>
+
+        :root {
+
+            --bg-color: #0a0a0a;
+
+            --accent-friendly: #FFD700; /* 입문용 골드/옐로우 */
+
+            --accent-typo: #007AFF;     /* 타이포용 블루 */
+
+            --accent-graphic: #FF3B30;  /* 그래픽용 레드 */
+
+            --accent-grid: #34C759;     /* 그리드용 그린 */
+
+            --text-main: #ffffff;
+
+            --text-dim: #888;
+
+            --grid-gap: 25px;
+
+        }
+
+
+
+        body {
+
+            background-color: var(--bg-color);
+
+            color: var(--text-main);
+
+            margin: 0;
+
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+
+            -webkit-font-smoothing: antialiased;
+
+            line-height: 1.6;
+
+        }
+
+
+
+        /* Navigation */
+
+        nav {
+
+            position: fixed;
+
+            top: 0; width: 100%;
+
+            background: rgba(10, 10, 10, 0.85);
+
+            backdrop-filter: blur(15px);
+
+            z-index: 1000;
+
+            border-bottom: 1px solid #222;
+
+        }
+
+        .nav-content {
+
+            max-width: 1400px;
+
+            margin: 0 auto;
+
+            padding: 15px 40px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+        }
+
+        .nav-links a {
+
+            color: var(--text-dim);
+
+            text-decoration: none;
+
+            font-size: 0.75rem;
+
+            font-weight: 700;
+
+            letter-spacing: 1.5px;
+
+            margin-left: 25px;
+
+            transition: color 0.3s;
+
+        }
+
+        .nav-links a:hover { color: #fff; }
+
+
+
+        header {
+
+            max-width: 1400px;
+
+            margin: 160px auto 80px auto;
+
+            padding: 0 40px;
+
+        }
+
+        header h1 {
+
+            font-size: clamp(2.5rem, 8vw, 6rem);
+
+            font-weight: 900;
+
+            letter-spacing: -3px;
+
+            margin: 0;
+
+            text-transform: uppercase;
+
+        }
+
+        header p {
+
+            font-size: 1.1rem;
+
+            color: var(--text-dim);
+
+            margin-top: 10px;
+
+            border-left: 2px solid #444;
+
+            padding-left: 15px;
+
+        }
+
+
+
+        .container {
+
+            max-width: 1400px;
+
+            margin: 0 auto;
+
+            padding: 0 40px;
+
+        }
+
+
+
+        /* Category System */
+
+        .category-section { margin-bottom: 120px; scroll-margin-top: 100px; }
+
+        .category-header { 
+
+            display: flex; 
+
+            align-items: baseline; 
+
+            gap: 20px;
+
+            margin-bottom: 30px; 
+
+            border-bottom: 1px solid #222;
+
+            padding-bottom: 15px;
+
+        }
+
+        .category-title {
+
+            font-size: 1.8rem;
+
+            font-weight: 800;
+
+            letter-spacing: -1px;
+
+        }
+
+        .category-tag {
+
+            font-size: 0.8rem;
+
+            color: var(--text-dim);
+
+            text-transform: uppercase;
+
+            letter-spacing: 2px;
+
+        }
+
+
+
+        /* Section Highlights */
+
+        #cat_beginner .category-title { color: var(--accent-friendly); }
+
+        #cat_typo .category-title { color: var(--accent-typo); }
+
+        #cat_graphic .category-title { color: var(--accent-graphic); }
+
+        #cat_grid .category-title { color: var(--accent-grid); }
+
+
+
+        /* Flexible Grid */
+
+        .gallery-grid {
+
+            display: grid;
+
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+
+            gap: var(--grid-gap);
+
+        }
+
+
+
+        .book-item {
+
+            position: relative;
+
+            background: #161616;
+
+            aspect-ratio: 1 / 1.4;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            overflow: hidden;
+
+            border-radius: 4px;
+
+            transition: transform 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+
+        }
+
+        .book-item:hover {
+
+            transform: translateY(-10px);
+
+            background: #222;
+
+        }
+
+        .book-item img {
+
+            width: 80%;
+
+            height: 85%;
+
+            object-fit: contain;
+
+            filter: grayscale(20%);
+
+            transition: filter 0.3s;
+
+        }
+
+        .book-item:hover img { filter: grayscale(0%); }
+
+
+
+        /* Info Overlay */
+
+        .book-label {
+
+            position: absolute;
+
+            bottom: 10px;
+
+            left: 10px;
+
+            font-size: 0.65rem;
+
+            color: #555;
+
+            text-transform: uppercase;
+
+        }
+
+
+
+        /* Lightbox */
+
+        #lightbox {
+
+            display: none;
+
+            position: fixed;
+
+            z-index: 9999;
+
+            top: 0; left: 0;
+
+            width: 100%; height: 100%;
+
+            background: rgba(0,0,0,0.95);
+
+            justify-content: center;
+
+            align-items: center;
+
+            cursor: zoom-out;
+
+        }
+
+        #lightbox img { max-width: 85%; max-height: 85%; border-radius: 5px; }
+
+
+
+        @media (max-width: 768px) {
+
+            .nav-links { display: none; }
+
+            .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+
+            header h1 { font-size: 3rem; }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+
+<nav>
+
+    <div class="nav-content">
+
+        <div style="font-weight:900;">Editorial Design</div>
+
+        <div class="nav-links">
+
+            <a href="#cat_beginner">BEGINNER</a>
+
+            <a href="#cat_typo">TYPOGRAPHY</a>
+
+            <a href="#cat_graphic">GRAPHIC</a>
+
+            <a href="#cat_grid">GRID</a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+
+<header>
+
+    <h1>Port Folio</h1>
+
+    <p>pjhdesign@naver.com</p>
+
+</header>
+
+
+
+<div class="container">
+
+    
+
+    <section id="cat_beginner" class="category-section">
+
+        <div class="category-header">
+
+            <div class="category-title">친근한 입문</div>
+
+            <div class="category-tag">Character & Emotional</div>
+
+        </div>
+
+        <div class="gallery-grid">
+
+            <div class="book-item"><img src="혼만공파.jpg" alt="혼자 만들면서 공부하는 파이썬"><span class="book-label">Beginner_01</span></div>
+
+            <div class="book-item"><img src="혼만공딥.jpg" alt="혼자 만들면서 공부하는 딥러닝"><span class="book-label">Beginner_02</span></div>
+
+            <div class="book-item"><img src="혼공파.png" alt="혼자 공부하는 파이썬"><span class="book-label">Beginner_03</span></div>
+
+            <div class="book-item"><img src="혼공자.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_04</span></div>
+
+            <div class="book-item"><img src="혼공씨.jpg" alt="혼자 공부하는 C언어"><span class="book-label">Beginner_05</span></div>
+
+            <div class="book-item"><img src="혼공S.jpg" alt="혼자 공부하는 SQL"><span class="book-label">Beginner_06</span></div>
+
+            <div class="book-item"><img src="혼공네트.jpg" alt="혼자 공부하는 네트워크"><span class="book-label">Beginner_07</span></div>
+
+            <div class="book-item"><img src="혼공얄코.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_08</span></div>
+
+            <div class="book-item"><img src="혼공컴운.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_09</span></div>
+
+            <div class="book-item"><img src="혼공프로.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_10</span></div>
+
+            <div class="book-item"><img src="혼공R.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_11</span></div>
+
+            <div class="book-item"><img src="혼공분석.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_12</span></div>
+
+            <div class="book-item"><img src="웹브라우저.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_13</span></div>
+
+            <div class="book-item"><img src="회사통통합.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_14</span></div>
+
+            <div class="book-item"><img src="회사통엑셀vba.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_15</span></div>
+
+            <div class="book-item"><img src="회사통파포.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_16</span></div>
+
+            <div class="book-item"><img src="회사통3ds.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_17</span></div>
+
+            <div class="book-item"><img src="엑셀함수수식.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_18</span></div>
+
+            <div class="book-item"><img src="회사통_파포.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_19</span></div>
+
+            <div class="book-item"><img src="회사통엑셀입문.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_20</span></div>
+
+            <div class="book-item"><img src="회사통실무엑셀.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_21</span></div>
+
+            <div class="book-item"><img src="회사통엑셀입문1.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_22</span></div>
+
+            <div class="book-item"><img src="회사통_오토캐드.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_23</span></div>
+
+            <div class="book-item"><img src="유니티게임개발.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_24</span></div>
+
+            <div class="book-item"><img src="첫안드로이드.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_25</span></div>
+
+            <div class="book-item"><img src="기초수학.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_26</span></div>
+
+            <div class="book-item"><img src="C언어.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_27</span></div>
+
+            <div class="book-item"><img src="C언어자료구조.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_28</span></div>
+
+            <div class="book-item"><img src="C프로그래밍.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_29</span></div>
+
+            <div class="book-item"><img src="파이썬데이터분석.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_30</span></div>
+
+            <div class="book-item"><img src="파이썬비기너.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_31</span></div>
+
+            <div class="book-item"><img src="파이썬비기너1.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_32</span></div>
+
+            <div class="book-item"><img src="파이썬자료구조.jpg" alt="혼자 공부하는 자바"><span class="book-label">Beginner_33</span></div>
+
+            </div>
+
+    </section>
+
+
+
+    <section id="cat_typo" class="category-section">
+
+        <div class="category-header">
+
+            <div class="category-title">타이포 중심</div>
+
+            <div class="category-tag">Hierarchy & Clarity</div>
+
+        </div>
+
+        <div class="gallery-grid">
+
+            <div class="book-item"><img src="개발자핸드북.jpg" alt="엑셀바이블"><span class="book-label">Typo_01</span></div>
+
+            <div class="book-item"><img src="육각형개발자.png" alt="GPT기술"><span class="book-label">Typo_02</span></div>
+
+            <div class="book-item"><img src="DDD.jpg" alt="LeanHR"><span class="book-label">Typo_03</span></div>
+
+            <div class="book-item"><img src="스레드운영법.jpg" alt="구글앱스"><span class="book-label">Typo_04</span></div>
+
+            <div class="book-item"><img src="leanHR.jpg" alt="구글앱스"><span class="book-label">Typo_05</span></div>
+
+            <div class="book-item"><img src="통계없는메타분석.png" alt="구글앱스"><span class="book-label">Typo_06</span></div>
+
+            <div class="book-item"><img src="인공지능마케팅.jpg" alt="구글앱스"><span class="book-label">Typo_07</span></div>
+
+            <div class="book-item"><img src="직장인업무공략.jpg" alt="구글앱스"><span class="book-label">Typo_08</span></div>
+
+            <div class="book-item"><img src="제로수학.jpg" alt="구글앱스"><span class="book-label">Typo_09</span></div>
+
+            <div class="book-item"><img src="테트리스.jpg" alt="구글앱스"><span class="book-label">Typo_10</span></div>
+
+            <div class="book-item"><img src="디지털헬스케어.jpg" alt="구글앱스"><span class="book-label">Typo_11</span></div>
+
+            <div class="book-item"><img src="네이버스마트스토어.jpg" alt="구글앱스"><span class="book-label">Typo_12</span></div>
+
+            <div class="book-item"><img src="비즈니스개론.jpg" alt="구글앱스"><span class="book-label">Typo_13</span></div>
+
+            <div class="book-item"><img src="경영경제통계.jpg" alt="구글앱스"><span class="book-label">Typo_14</span></div>
+
+            <div class="book-item"><img src="픽셀아트.jpg" alt="구글앱스"><span class="book-label">Typo_15</span></div>
+
+            <div class="book-item"><img src="일러실무강의.jpg" alt="구글앱스"><span class="book-label">Typo_16</span></div>
+
+            <div class="book-item"><img src="출판사책쓰기.jpg" alt="구글앱스"><span class="book-label">Typo_17</span></div>
+
+            <div class="book-item"><img src="쉽고빠른ppt.png" alt="구글앱스"><span class="book-label">Typo_18</span></div>
+
+            <div class="book-item"><img src="엑셀데이터과학.jpg" alt="구글앱스"><span class="book-label">Typo_19</span></div>
+
+            <div class="book-item"><img src="알고리즘.jpg" alt="구글앱스"><span class="book-label">Typo_20</span></div>
+
+            <div class="book-item"><img src="함수자바스크립트.png" alt="구글앱스"><span class="book-label">Typo_21</span></div>
+
+            <div class="book-item"><img src="java9.jpg" alt="구글앱스"><span class="book-label">Typo_22</span></div>
+
+            <div class="book-item"><img src="프로덕트매니저.jpg" alt="프로덕스 매니저는 무슨 일을 하고 있을까"><span class="book-label">Typo_23</span></div>
+
+        </div>
+
+    </section>
+
+
+
+    <section id="cat_graphic" class="category-section">
+
+        <div class="category-header">
+
+            <div class="category-title">그래픽 중심</div>
+
+            <div class="category-tag">Symbolism & Abstract</div>
+
+        </div>
+
+        <div class="gallery-grid">
+
+            <div class="book-item"><img src="소프트웨어.jpg" alt="DDD"><span class="book-label">Graphic_01</span></div>
+
+            <div class="book-item"><img src="구글완벽가이드.jpg" alt="브라우저"><span class="book-label">Graphic_02</span></div>
+
+            <div class="book-item"><img src="gpt대화.jpg" alt="딥러닝수학"><span class="book-label">Graphic_03</span></div>
+
+            <div class="book-item"><img src="아키텍트첫걸음.jpg" alt="분산원장"><span class="book-label">Graphic_04</span></div>
+
+            <div class="book-item"><img src="ai수업활용.jpg" alt="분산원장"><span class="book-label">Graphic_05</span></div>
+
+            <div class="book-item"><img src="퍼포먼스마케팅.jpg" alt="분산원장"><span class="book-label">Graphic_06</span></div>
+
+            <div class="book-item"><img src="딥러닝선형대수학.jpg" alt="분산원장"><span class="book-label">Graphic_07</span></div>
+
+            <div class="book-item"><img src="xgboost.jpg" alt="분산원장"><span class="book-label">Graphic_08</span></div>
+
+            <div class="book-item"><img src="깃깃허브.jpg" alt="분산원장"><span class="book-label">Graphic_09</span></div>
+
+            <div class="book-item"><img src="플러터앱개발.jpg" alt="분산원장"><span class="book-label">Graphic_10</span></div>
+
+            <div class="book-item"><img src="스프링프레임워크.jpg" alt="분산원장"><span class="book-label">Graphic_11</span></div>
+
+            <div class="book-item"><img src="쓸모있는ai서비스.jpg" alt="분산원장"><span class="book-label">Graphic_12</span></div>
+
+            <div class="book-item"><img src="씨플플.jpg" alt="분산원장"><span class="book-label">Graphic_13</span></div>
+
+            <div class="book-item"><img src="파인만컴퓨터강의.jpg" alt="분산원장"><span class="book-label">Graphic_14</span></div>
+
+            <div class="book-item"><img src="앤서블.jpg" alt="분산원장"><span class="book-label">Graphic_15</span></div>
+
+            <div class="book-item"><img src="유니티.jpg" alt="분산원장"><span class="book-label">Graphic_16</span></div>
+
+            <div class="book-item"><img src="윤피티.jpg" alt="분산원장"><span class="book-label">Graphic_17</span></div>
+
+            <div class="book-item"><img src="편집디자인강의.jpg" alt="분산원장"><span class="book-label">Graphic_18</span></div>
+
+            <div class="book-item"><img src="모션그래픽.jpg" alt="분산원장"><span class="book-label">Graphic_19</span></div>
+
+            <div class="book-item"><img src="일취월장.jpg" alt="분산원장"><span class="book-label">Graphic_20</span></div>
+
+            <div class="book-item"><img src="창업의과학.jpg" alt="분산원장"><span class="book-label">Graphic_21</span></div>
+
+            <div class="book-item"><img src="처음_블록체인.jpg" alt="분산원장"><span class="book-label">Graphic_22</span></div>
+
+            <div class="book-item"><img src="처음_블록체인프로그래밍.png" alt="분산원장"><span class="book-label">Graphic_23</span></div>
+
+            <div class="book-item"><img src="처음_예제블록체인.jpg" alt="분산원장"><span class="book-label">Graphic_24</span></div>
+
+            <div class="book-item"><img src="친절한딥러닝.jpg" alt="분산원장"><span class="book-label">Graphic_25</span></div>
+
+            <div class="book-item"><img src="컴퓨터과학개론.jpg" alt="분산원장"><span class="book-label">Graphic_26</span></div>
+
+            <div class="book-item"><img src="쿡북_안드로이드.jpg" alt="분산원장"><span class="book-label">Graphic_27</span></div>
+
+            <div class="book-item"><img src="파이썬증권.jpg" alt="분산원장"><span class="book-label">Graphic_28</span></div>
+
+            <div class="book-item"><img src="한번에통과.jpg" alt="분산원장"><span class="book-label">Graphic_29</span></div>
+
+            <div class="book-item"><img src="헤드퍼스트_디자인.jpg" alt="분산원장"><span class="book-label">Graphic_30</span></div>
+
+            <div class="book-item"><img src="헤드퍼스트자바.jpg" alt="분산원장"><span class="book-label">Graphic_31</span></div>
+
+            <div class="book-item"><img src="헤드퍼스트C.jpg" alt="분산원장"><span class="book-label">Graphic_32</span></div>
+
+            <div class="book-item"><img src="경제수학강의.jpg" alt="분산원장"><span class="book-label">Graphic_33</span></div>
+
+            <div class="book-item"><img src="소프트웨어이론실제.jpg" alt="분산원장"><span class="book-label">Graphic_34</span></div>
+
+            <div class="book-item"><img src="소프트웨어공학.jpg" alt="분산원장"><span class="book-label">Graphic_35</span></div>
+
+            <div class="book-item"><img src="미분적분학.jpg" alt="분산원장"><span class="book-label">Graphic_36</span></div>
+
+            <div class="book-item"><img src="lac.jpg" alt="분산원장"><span class="book-label">Graphic_37</span></div>
+
+            <div class="book-item"><img src="자료구조_자바.jpg" alt="분산원장"><span class="book-label">Graphic_38</span></div>
+
+            <div class="book-item"><img src="자료구조_파이썬.jpg" alt="분산원장"><span class="book-label">Graphic_39</span></div>
+
+            <div class="book-item"><img src="실무피그마.jpg" alt="실무피그마"><span class="book-label">Graphic_40</span></div>
+
+        </div>
+
+    </section>
+
+
+
+    <section id="cat_grid" class="category-section">
+
+        <div class="category-header">
+
+            <div class="category-title">그리드 중심</div>
+
+            <div class="category-tag">System & Framework</div>
+
+        </div>
+
+        <div class="gallery-grid">
+
+            <div class="book-item"><img src="바이블_엑셀.jpg" alt="Java9"><span class="book-label">Grid_01</span></div>
+
+            <div class="book-item"><img src="바이블_매크로VBA.jpg" alt="Go성능"><span class="book-label">Grid_02</span></div>
+
+            <div class="book-item"><img src="바이블_데이터분석.jpg" alt="회사통"><span class="book-label">Grid_03</span></div>
+
+            <div class="book-item"><img src="바이블_매크로.jpg" alt="K8s"><span class="book-label">Grid_04</span></div>
+
+            <div class="book-item"><img src="바이블_함수바이블.jpg" alt="K8s"><span class="book-label">Grid_05</span></div>
+
+            <div class="book-item"><img src="엑셀매크로.jpg" alt="K8s"><span class="book-label">Grid_06</span></div>
+
+            <div class="book-item"><img src="GO성능최적화.jpg" alt="K8s"><span class="book-label">Grid_07</span></div>
+
+            <div class="book-item"><img src="오랄리_개발자.jpg" alt="K8s"><span class="book-label">Grid_08</span></div>
+
+            <div class="book-item"><img src="오랄리_데이터품질.jpg" alt="K8s"><span class="book-label">Grid_09</span></div>
+
+            <div class="book-item"><img src="이것이_안드로이드.jpg" alt="K8s"><span class="book-label">Grid_10</span></div>
+
+            <div class="book-item"><img src="이것이_자료구조.jpg" alt="K8s"><span class="book-label">Grid_11</span></div>
+
+            <div class="book-item"><img src="이것이C.jpg" alt="K8s"><span class="book-label">Grid_12</span></div>
+
+            <div class="book-item"><img src="이것이C2.jpg" alt="K8s"><span class="book-label">Grid_13</span></div>
+
+            <div class="book-item"><img src="이것이리눅스.jpg" alt="K8s"><span class="book-label">Grid_14</span></div>
+
+            <div class="book-item"><img src="이것이_코딩.jpg" alt="K8s"><span class="book-label">Grid_15</span></div>
+
+            <div class="book-item"><img src="이것이_백앤드.jpg" alt="K8s"><span class="book-label">Grid_16</span></div>
+
+            <div class="book-item"><img src="이것이_윈도우.jpg" alt="K8s"><span class="book-label">Grid_17</span></div>
+
+            <div class="book-item"><img src="분산원장기술.jpg" alt="K8s"><span class="book-label">Grid_18</span></div>
+
+            <div class="book-item"><img src="스트랭_선형대수학.jpg" alt="K8s"><span class="book-label">Grid_19</span></div>
+
+            <div class="book-item"><img src="스트랭미분적분학.jpg" alt="K8s"><span class="book-label">Grid_20</span></div>
+
+            <div class="book-item"><img src="대학물리학.jpg" alt="K8s"><span class="book-label">Grid_21</span></div>
+
+            <div class="book-item"><img src="멀티모달.jpg" alt="K8s"><span class="book-label">Grid_22</span></div>
+
+            <div class="book-item"><img src="ai영상.png" alt="K8s"><span class="book-label">Grid_23</span></div>
+
+            <div class="book-item"><img src="디지털신호처리.jpg" alt="K8s"><span class="book-label">Grid_24</span></div>
+
+            <div class="book-item"><img src="반도체공학.jpg" alt="K8s"><span class="book-label">Grid_25</span></div>
+
+            <div class="book-item"><img src="전자기학.jpg" alt="K8s"><span class="book-label">Grid_26</span></div>
+
+            <div class="book-item"><img src="행동재무론.jpg" alt="K8s"><span class="book-label">Grid_27</span></div>
+
+            <div class="book-item"><img src="동역학.jpg" alt="K8s"><span class="book-label">Grid_28</span></div>
+
+            <div class="book-item"><img src="정역학.jpg" alt="K8s"><span class="book-label">Grid_29</span></div>
+
+            <div class="book-item"><img src="공학수치해석.jpg" alt="K8s"><span class="book-label">Grid_30</span></div>
+
+            <div class="book-item"><img src="확률과통계.jpg" alt="K8s"><span class="book-label">Grid_31</span></div>
+
+        </div>
+
+    </section>
+
+
+
+</div>
+
+
+
+<div id="lightbox"><img src=""></div>
+
+
+
+<script>
+
+    const lightbox = document.getElementById('lightbox');
+
+    const lightboxImg = lightbox.querySelector('img');
+
+
+
+    document.querySelectorAll('.book-item img').forEach(img => {
+
+        img.addEventListener('click', () => {
+
+            lightboxImg.src = img.src;
+
+            lightbox.style.display = 'flex';
+
+        });
+
+    });
+
+
+
+    lightbox.addEventListener('click', () => {
+
+        lightbox.style.display = 'none';
+
+    });
+
+
+
+    // Smooth scroll for nav
+
+    document.querySelectorAll('nav a').forEach(anchor => {
+
+        anchor.addEventListener('click', function(e) {
+
+            e.preventDefault();
+
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+
+                behavior: 'smooth'
+
+            });
+
+        });
+
+    });
+
+</script>
+
+
+
+</body>
+
+</html>
